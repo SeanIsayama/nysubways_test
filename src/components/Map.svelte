@@ -127,9 +127,27 @@
 			.attr("stroke", "#808080")
 			.attr("stroke-width", 1)
 			.attr("fill-opacity", 0.4)
-			.attr("name", function (d) {
-				return d["name"];
-			});
+            .on("mouseenter", function(event, d) {
+        // Show popup with station name
+        const popup = new mapboxgl.Popup({
+          closeButton: false,
+          offset: 25,
+        })
+          .setLngLat([d.longitude, d.latitude])
+          .setHTML(`<p>${d.station_complex}</p>`)
+          .addTo(map);
+        this._popup = popup;
+      })
+      .on("mouseleave", function() {
+        // Remove popup when mouse leaves
+        if (this._popup) {
+          this._popup.remove();
+          this._popup = null;
+        }
+      });
+			// .attr("name", function (d) {
+			// 	return d["name"];
+			// });
       position_station_markers();
     }
   function position_station_markers() {

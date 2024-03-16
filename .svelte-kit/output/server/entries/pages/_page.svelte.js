@@ -99,7 +99,7 @@ const Map$1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   function update_station_markers() {
     station_markers.transition().duration(1e3).attr("r", function(d) {
       if (index == d3.timeFormat("%H")(new Date(d.transit_timestamp))) {
-        return calculateRadius2(d.ridership);
+        return calculateRadius(d.ridership);
       } else {
         return 0;
       }
@@ -107,7 +107,7 @@ const Map$1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
       return color_arrival(d.ridership / 3e3);
     });
   }
-  function calculateRadius2(ridership) {
+  function calculateRadius(ridership) {
     const scale = d3.scaleLinear().domain([0, 1, 500]).range(
       [0, 2, 5]
     );
@@ -195,23 +195,28 @@ const Line = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   })}  <line${add_attribute("x1", data[index] ? x(data[index].date) : 0, 0)}${add_attribute("y1", marginTop, 0)}${add_attribute("x2", data[index] ? x(data[index].date) : 0, 0)}${add_attribute("y2", height - marginBottom, 0)} stroke="#FF0000" stroke-width="2"></line> <text font-family="Nunito, sans-serif" font-size="12px"${add_attribute("x", data[index] ? x(data[index].date) : 0, 0)}${add_attribute("y", marginTop - 8, 0)}><tspan>${escape(data[index].value)} riders</tspan> <tspan${add_attribute("x", data[index] ? x(data[index].date) : 0, 0)} dy="1.2em" font-size="9px">${escape(d3.timeFormat("%I:%M %p")(data[index].date))}</tspan></text>` : ``}</g></svg></div>`;
 });
 const css$1 = {
-  code: 'svg.svelte-akk0wn{background-color:#f0f0f0;position:"absolute"\n  }',
+  code: 'svg.svelte-bssioj{background-color:#f0f0f0;position:"absolute";font-size:16px}',
   map: null
 };
-function calculateRadius() {
-  return 5;
-}
 const Graph = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { index } = $$props;
   let { offset } = $$props;
   let data = Array.from({ length: 800 }, (_, i) => i);
+  const lines = [
+    "The bustling metropolis of New York, often dubbed the 'City that ",
+    "never sleeps,' is home to around 8 million residents as of 2024. This",
+    "vast community relies extensively on the efficiency and ",
+    "accessibility of public transportation networks, such as the ",
+    "iconic subway system, to sustain its vibrancy and fuel its economic ",
+    "growth and prosperity."
+  ];
   let text;
   function createCircles() {
     const svg = select("svg");
     svg.selectAll("circle").remove();
-    svg.selectAll("circle").data(data).enter().append("circle").attr("cx", (_, i) => i % 40 * 20 + 10).attr(
+    svg.selectAll("circle").data(data).enter().append("circle").attr("cx", (_, i) => i % 39 * 20 + 10).attr(
       "cy",
-      (_, i) => Math.floor(i / 40) * 20 + 10
+      (_, i) => Math.floor(i / 39) * 20 + 10
       // Adjust y position based on the number of columns
     ).attr("r", 0).attr(
       "fill",
@@ -221,7 +226,18 @@ const Graph = create_ssr_component(($$result, $$props, $$bindings, slots) => {
       // Apply transition for fading in effect // Duration of the transition
     ).delay((_, i) => i * 5).attr(
       "r",
-      calculateRadius
+      5
+      // Animate radius
+    ).attr("opacity", 0.7);
+    svg.append("circle").attr("id", "legend").attr(
+      "cx",
+      850
+    ).attr("cy", 20).attr("fill", "blue").attr("opacity", 0).transition().duration(
+      500
+      // Apply transition for fading in effect // Duration of the transition
+    ).delay((_, i) => i * 5).attr(
+      "r",
+      5
       // Animate radius
     ).attr("opacity", 0.7);
     text = svg.append("text").attr("x", 850).attr(
@@ -229,58 +245,202 @@ const Graph = create_ssr_component(($$result, $$props, $$bindings, slots) => {
       50
       // Adjust y position as needed
     ).attr("fill", "black").style("opacity", 0);
-    text.append("tspan").text("As of the end of 2021, the city of New York has a population of a");
-    text.append("tspan").attr("x", 850).attr("y", 70).text(
-      "whopping 8.468 million."
+    text.selectAll("tspan").data(lines.filter((_, i) => i <= 6)).enter().append("tspan").attr("x", 850).attr("dy", (d, i) => i === 0 ? 0 : "1.2em").text(
+      (d) => d
     );
+    text.append("tspan").attr("x", 860).attr("y", 25).text(" = 10,000 residents");
     text.transition().duration(1e3).style(
       "opacity",
       1
     );
   }
   function updateColor(color) {
-    select("svg").selectAll("circle").filter((_, i) => i < 300).transition().duration(
+    select("svg").selectAll("circle").filter((_, i) => i < 250).transition().duration(
       500
       // Duration of the transition
     ).attr("fill", color);
-    text.append("tspan").attr("x", 850).attr("y", 90).text(
+    text.append("tspan").attr("x", 850).attr("y", 200).text(
       "Of all people who commuted to work in New York City in 2021,"
     );
-    text.append("tspan").attr("x", 850).attr("y", 110).text(
-      " 32% use the subway."
+    text.append("tspan").attr("x", 850).attr("y", 220).text(
+      " 32% use the subway. This totals up to close to 2.5 million"
     );
-    text.selectAll("tspan").filter((_, i) => i >= 2).style(
-      "opacity",
-      0
-      // Set initial opacity to 0 for fading in effect
+    text.append("tspan").attr("x", 850).attr("y", 240).text(
+      "commuters that use the NYC subway network."
+    );
+    text.selectAll("tspan").filter((_, i) => i >= 7).style("opacity", 0).transition().duration(
+      1e3
+      // Apply transition for fading in effect // Duration of the transition
+    ).style("opacity", 1);
+  }
+  function addTrains() {
+    select("svg").selectAll("circle").filter((_, i) => i >= 250 && i != 800).transition().duration(
+      500
+      // Apply transition for fading away // Duration of the transition
+    ).attr("opacity", 0).remove();
+    const svg = select("svg");
+    svg.selectAll("rect").remove();
+    svg.selectAll("rect").data(Array.from({ length: 64 }, (_, i) => i)).enter().append("rect").attr("id", "to-move").attr("x", -100).attr(
+      "y",
+      (_, i) => Math.floor(i / 13) * 40 + 150
+      // Adjust y position based on the number of rows
+    ).attr("width", 40).attr(
+      "height",
+      20
+      // Set height of rectangles
+    ).attr("fill", "none").attr(
+      "stroke",
+      "black"
+      // Set outline color to black
     ).transition().duration(
       1e3
       // Duration of the transition
+    ).attr("x", (_, i) => i % 13 * 60).on("end", function() {
+      svg.selectAll("circle:not(#legend)").transition().duration(
+        1e3
+        // Duration of the transition
+      ).attr("id", function(_, i) {
+        let conditionalOffset = 0;
+        if (i % 3 !== 2 && Math.floor(i / 39) % 2 === 0 && i <= 190) {
+          conditionalOffset = 230;
+        } else if (i % 3 !== 2 && Math.floor(i / 39) % 2 === 1 && i <= 160) {
+          conditionalOffset = 130;
+        }
+        return conditionalOffset !== 0 ? "to-move" : null;
+      }).attr("cy", (_, i) => {
+        let basePosition = Math.floor(i / 39) * 20 + 10;
+        let conditionalOffset = 0;
+        if (i % 3 !== 2 && Math.floor(i / 39) % 2 === 0 && i <= 190) {
+          conditionalOffset = 230;
+        } else if (i % 3 !== 2 && Math.floor(i / 39) % 2 === 1 && i <= 160) {
+          conditionalOffset = 130;
+        }
+        return basePosition + conditionalOffset;
+      });
+    });
+    svg.append("rect").attr("id", "legend").attr(
+      "cx",
+      850
+    ).attr("cy", 180).attr("fill", "blue").attr("opacity", 0).transition().duration(
+      500
+      // Apply transition for fading in effect // Duration of the transition
+    ).delay((_, i) => i * 5).attr(
+      "r",
+      5
+      // Animate radius
+    ).attr("opacity", 0.7);
+    text.append("tspan").attr("x", 850).attr("y", 280).text(
+      "On the other hand, thre are only around 6400 subways cars,"
+    );
+    text.append("tspan").attr("x", 850).attr("y", 300).text(
+      "acccording to the MTA. These cars fit an average of 200"
+    );
+    text.append("tspan").attr("x", 850).attr("y", 320).text(
+      "people, meaning even if all subway cars were in use and "
+    );
+    text.append("tspan").attr("x", 850).attr("y", 340).text(
+      "in full capacity, it could only carry around 1/2 of the"
+    );
+    text.append("tspan").attr("x", 850).attr("y", 360).text(
+      "NYC commuters."
+    );
+    text.selectAll("tspan").filter((_, i) => i >= 10).style("opacity", 0).transition().duration(
+      1e3
+      // Apply transition for fading in effect // Duration of the transition
+    ).style("opacity", 1);
+  }
+  function moveLeftAndOut() {
+    const svg = select("svg");
+    svg.selectAll("#to-move").transition().duration(
+      1e3
+      // Duration of the transition
+    ).attr("cx", -200).attr("x", -200);
+  }
+  function addGreenCircles() {
+    const svg = select("svg");
+    svg.selectAll(".green-circle").data(Array.from({ length: 100 })).enter().append(
+      "circle"
+    ).attr("class", "green-circle").attr("cx", (_, i) => Math.random() * 800).attr(
+      "cy",
+      600
+      // Starting position below the SVG
+    ).attr("r", 0).attr(
+      "fill",
+      "green"
+      // Fill color set to green
+    ).transition().duration(
+      1e3
+      // Duration of the transition
+    ).delay((_, i) => i * 10).attr(
+      "r",
+      5
+      // Animate radius
+    ).attr("cy", (_, i) => 500 - Math.random() * 100);
+    text.append("tspan").attr("x", 850).attr("y", 400).text(
+      "In addition, the annual 56.7 million visitors recorded in"
+    );
+    text.append("tspan").attr("x", 850).attr("y", 420).text(
+      "2022 will only make the MTA subways even more populated,"
+    );
+    text.append("tspan").attr("x", 850).attr("y", 440).text(
+      "making navigation in these subways more difficult, stressful,"
+    );
+    text.append("tspan").attr("x", 850).attr("y", 460).text(
+      "and challenging."
+    );
+    text.selectAll("tspan").filter((_, i) => i >= 16).style("opacity", 0).transition().duration(
+      1e3
+      // Apply transition for fading in effect // Duration of the transition
     ).style("opacity", 1);
   }
   let circleMade = false;
   let circleUpdate = false;
+  let addTrain = false;
+  let updateTriggered = false;
+  let addGreenTriggered = false;
   if ($$props.index === void 0 && $$bindings.index && index !== void 0)
     $$bindings.index(index);
   if ($$props.offset === void 0 && $$bindings.offset && offset !== void 0)
     $$bindings.offset(offset);
   $$result.css.add(css$1);
   {
-    if (index === 1 && offset > 0.2 && !circleMade) {
+    if (index === 1 && offset > 0.15 && !circleMade) {
       createCircles();
       circleMade = true;
     }
   }
   {
-    if (index === 1 && offset > 0.6 && !circleUpdate) {
+    if (index === 1 && offset > 0.3 && !circleUpdate) {
       updateColor("red");
       circleUpdate = true;
     }
   }
-  return `<svg width="100%" height="600" class="svelte-akk0wn"></svg>`;
+  {
+    if (index === 1 && offset > 0.45 && !addTrain) {
+      addTrains();
+      addTrain = true;
+    }
+  }
+  {
+    {
+      if (index === 1 && offset > 0.6 && !updateTriggered) {
+        moveLeftAndOut();
+        updateTriggered = true;
+      }
+    }
+  }
+  {
+    {
+      if (index === 1 && offset > 0.75 && !addGreenTriggered) {
+        addGreenCircles();
+        addGreenTriggered = true;
+      }
+    }
+  }
+  return `<svg width="100%" height="600" class="svelte-bssioj"></svg>`;
 });
 const css = {
-  code: ".header.svelte-fgyypv.svelte-fgyypv{font-family:Nunito, sans-serif;background-color:#f0f0f0;padding:20px;border-bottom:2px solid #ccc}.header-content.svelte-fgyypv.svelte-fgyypv{display:-webkit-box;display:flex;-webkit-box-align:center;align-items:center;-webkit-box-pack:justify;justify-content:space-between}.header-text.svelte-fgyypv.svelte-fgyypv{-webkit-box-flex:1;flex:1;margin-right:20px}.header-image.svelte-fgyypv img.svelte-fgyypv{max-width:40%;float:right;height:auto}.foreground.svelte-fgyypv.svelte-fgyypv{width:100%;position:relative;z-index:0}.background.svelte-fgyypv.svelte-fgyypv{width:100%;height:100vh;position:relative;outline:rgb(255, 255, 255) solid 3px;z-index:1}section.svelte-fgyypv.svelte-fgyypv{height:100vh;width:91.5%;position:relative;background-color:white;outline:black solid 3px;color:black;padding-left:60px;padding-right:60px}.progress-bars.svelte-fgyypv.svelte-fgyypv{position:fixed;top:0px;right:20px;z-index:999}.fixed-graph.svelte-fgyypv.svelte-fgyypv{position:sticky;top:50px;z-index:999}",
+  code: '.header.svelte-1xjujmc{font-family:Nunito, sans-serif;background-color:#d9d9d9;padding:20px;border-bottom:2px solid #ccc}.header-content.svelte-1xjujmc{background-color:"#d9d9d9";display:-webkit-box;display:flex;-webkit-box-align:center;align-items:center;-webkit-box-pack:justify;justify-content:space-between}.section-text.svelte-1xjujmc{-webkit-box-flex:1;flex:1;margin-right:20px}h1.svelte-1xjujmc{font-size:50px}h2.svelte-1xjujmc{font-size:20px;font-family:Nunito, sans-serif}.foreground.svelte-1xjujmc{width:100%;position:relative;background-color:#f0f0f0;z-index:0}.background.svelte-1xjujmc{width:100%;height:100vh;position:relative;outline:rgb(255, 255, 255) solid 3px;z-index:1}section.svelte-1xjujmc{height:100vh;width:91.5%;position:relative;background-color:#f0f0f0;padding-left:60px;padding-right:60px}.progress-bars.svelte-1xjujmc{position:fixed;top:0px;right:20px;z-index:999}.fixed-graph.svelte-1xjujmc{position:sticky;top:50px;z-index:999}',
   map: null
 };
 const ScrollyTeller = create_ssr_component(($$result, $$props, $$bindings, slots) => {
@@ -338,7 +498,7 @@ const ScrollyTeller = create_ssr_component(($$result, $$props, $$bindings, slots
       },
       {
         foreground: () => {
-          return `<div class="foreground svelte-fgyypv" slot="foreground"><div class="progress-bars svelte-fgyypv"><p>current section: <strong>${escape(index + 1)}/${escape(count)}</strong></p> <progress${add_attribute("value", count ? (index + 1) / count : 0, 0)}></progress> <p>offset in current section: <strong>${escape(parseFloat(offset).toFixed(2))}/1</strong></p> <progress${add_attribute("value", offset || 0, 0)}></progress></div> <section style="height: 400px;" class="svelte-fgyypv" data-svelte-h="svelte-3uje67"><div class="header svelte-fgyypv"><div class="header-content svelte-fgyypv"><div class="header-text svelte-fgyypv"><h1>New York - City Transit Data</h1> <p>The bustling metropolis of New York, often dubbed the &#39;City that never sleeps,&#39; boasts a subway system that operates around the clock. This analysis focuses on the expansive metropolitan area, encompassing the five vibrant boroughs of Bronx, Brooklyn, Manhattan, Queens, and Staten Island. This vast community relies extensively on the efficiency and accessibility of public transportation networks, such as the iconic subway system, to sustain its vibrancy and fuel its economic growth and prosperity.</p></div> <div class="header-image svelte-fgyypv"> <img src="https://raw.githubusercontent.com/SeanIsayama/nysubways/main/src/data/img/statue_of_liberty.png" alt="Image description" class="svelte-fgyypv"></div></div></div></section> <section style="height: 1600px;" class="svelte-fgyypv"><div class="fixed-graph svelte-fgyypv">${validate_component(Graph, "Graph").$$render($$result, { index, offset }, {}, {})}</div></section> <section class="svelte-fgyypv" data-svelte-h="svelte-xowihu">index</section> <section class="svelte-fgyypv" data-svelte-h="svelte-xzfoxw">section 3.</section> <section class="svelte-fgyypv">section 4
+          return `<div class="foreground svelte-1xjujmc" slot="foreground"><div class="progress-bars svelte-1xjujmc"><p>current section: <strong>${escape(index + 1)}/${escape(count)}</strong></p> <progress${add_attribute("value", count ? (index + 1) / count : 0, 0)}></progress> <p>offset in current section: <strong>${escape(parseFloat(offset).toFixed(2))}/1</strong></p> <progress${add_attribute("value", offset || 0, 0)}></progress></div> <section style="height: 400px; background-color: #d9d9d9;" class="svelte-1xjujmc" data-svelte-h="svelte-e7qcid"><div class="header svelte-1xjujmc" background-color="#d9d9d9"><div class="header-content svelte-1xjujmc"><div class="section-text svelte-1xjujmc"><h1 class="svelte-1xjujmc">A Deep Dive into MTA Data</h1> <h2 class="svelte-1xjujmc">An interactive tool for New York City&#39;s subway system navigation</h2></div> <div class="header-image"> <span class="mdi mdi-train"></span></div></div></div></section> <section style="height: 3200px;" class="svelte-1xjujmc"><div class="fixed-graph svelte-1xjujmc"><h2 class="svelte-1xjujmc" data-svelte-h="svelte-18g723m">New York City</h2> ${validate_component(Graph, "Graph").$$render($$result, { index, offset }, {}, {})}</div></section> <section class="svelte-1xjujmc" data-svelte-h="svelte-xowihu">index</section> <section class="svelte-1xjujmc" data-svelte-h="svelte-xzfoxw">section 3.</section> <section class="svelte-1xjujmc">section 4
         ${validate_component(Map$1, "Map").$$render(
             $$result,
             { index, geoJsonToFit },
@@ -349,11 +509,11 @@ const ScrollyTeller = create_ssr_component(($$result, $$props, $$bindings, slots
               }
             },
             {}
-          )}</section> <section class="svelte-fgyypv">section 5
+          )}</section> <section class="svelte-1xjujmc">section 5
         ${validate_component(Line, "Line").$$render($$result, { index }, {}, {})}</section></div>`;
         },
         background: () => {
-          return `<div class="background svelte-fgyypv" slot="background" data-svelte-h="svelte-afik7u"></div>`;
+          return `<div class="background svelte-1xjujmc" slot="background" data-svelte-h="svelte-afik7u"></div>`;
         }
       }
     )}`;

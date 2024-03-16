@@ -70,25 +70,26 @@
         <progress value={offset || 0} />
     
         </div>
-      <section style="height: 400px;">
-        <div class="header">
+      <section style="height: 400px; background-color: #d9d9d9;">
+        <div class="header"
+        background-color= "#d9d9d9">
           <div class="header-content">
-            <div class="header-text">
-              <h1>New York - City Transit Data</h1>
-              <p>
-                The bustling metropolis of New York, often dubbed the 'City that never sleeps,' boasts a subway system that operates around the clock. This analysis focuses on the expansive metropolitan area, encompassing the five vibrant boroughs of Bronx, Brooklyn, Manhattan, Queens, and Staten Island. This vast community relies extensively on the efficiency and accessibility of public transportation networks, such as the iconic subway system, to sustain its vibrancy and fuel its economic growth and prosperity.
-              </p>
+            <div class="section-text">
+              <h1>A Deep Dive into MTA Data</h1>
+              <h2>An interactive tool for New York City's subway system navigation</h2>
             </div>
             <div class="header-image">
-              <!-- <img src="/src/data/img/statue_of_liberty.png" alt="Image description"> -->
-              <img src="https://raw.githubusercontent.com/SeanIsayama/nysubways/main/src/data/img/statue_of_liberty.png" alt="Image description">
+              <!-- <img src="https://raw.githubusercontent.com/SeanIsayama/nysubways_test/main/src/data/img/statue_of_liberty.png" alt="Image description"> -->
+              <span class="mdi mdi-train"></span>
 
             </div>
           </div>
         </div>
       </section>
-      <section style="height: 1600px;">
+      <section style="height: 3200px;">
         <div class="fixed-graph">
+      <h2>New York City</h2>
+      
           <Graph {index} {offset}/>
         </div>
       </section>
@@ -107,23 +108,38 @@
 </Scroller>
 
 <style>
-   .header {
+  .header {
+  font-family: Nunito, sans-serif; 
+  background-color: #d9d9d9;
+  padding: 20px;
+  border-bottom: 2px solid #ccc;
+  }
+
+  .header-content {
+    background-color: "#d9d9d9";
+    display: flex; /* Use flexbox layout */
+    align-items: center; /* Center items vertically */
+    justify-content: space-between; /* Separate text and image */
+  }
+
+  .section-text {
+    flex: 1; /* Allow text to take up remaining space */
+    margin-right: 20px; /* Add some space between text and image */
+  }
+  h1{
+    font-size: 50px;
+  }
+  h2{
+    font-size: 20px;
+    font-family: Nunito, sans-serif;
+  }
+  .body {
   font-family: Nunito, sans-serif; 
   background-color: #f0f0f0;
   padding: 20px;
   border-bottom: 2px solid #ccc;
   }
 
-  .header-content {
-    display: flex; /* Use flexbox layout */
-    align-items: center; /* Center items vertically */
-    justify-content: space-between; /* Separate text and image */
-  }
-
-  .header-text {
-    flex: 1; /* Allow text to take up remaining space */
-    margin-right: 20px; /* Add some space between text and image */
-  }
 
   .header-image img {
     max-width: 40%; /* Ensure image doesn't exceed container width */
@@ -145,6 +161,7 @@
   .foreground {
     width: 100%;
     position: relative;
+    background-color: #f0f0f0;
     /* padding-top: 500px;  */
     z-index: 0; 
     }
@@ -157,15 +174,13 @@
     z-index: 1;
 
   }
-
-
   section {
     height: 100vh;
     width: 91.5%;
     position: relative; /* Needed for absolute positioning of children */
-    background-color: white; /* Boxes to white */
-    outline: black solid 3px;
-    color: black;
+    background-color: #f0f0f0;
+    /* outline: black solid 3px;
+    color: black; */
     padding-left: 60px;
     padding-right: 60px;
   }
@@ -225,6 +240,9 @@
     top: 50px; /* Adjust top positioning as needed */
     z-index: 999; /* Ensure the graph remains above other content */
   }
+  .icon-large {
+    font-size: 1000em; /* Adjust the size as needed */
+}
 
 
 </style>
