@@ -388,7 +388,7 @@ const Graph = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     text.append("tspan").attr("x", 850).attr("y", 460).text(
       "and challenging."
     );
-    text.selectAll("tspan").filter((_, i) => i >= 16).style("opacity", 0).transition().duration(
+    text.selectAll("tspan").filter((_, i) => i >= 15).style("opacity", 0).transition().duration(
       1e3
       // Apply transition for fading in effect // Duration of the transition
     ).style("opacity", 1);
@@ -498,7 +498,7 @@ const ScrollyTeller = create_ssr_component(($$result, $$props, $$bindings, slots
       },
       {
         foreground: () => {
-          return `<div class="foreground svelte-1xjujmc" slot="foreground"><div class="progress-bars svelte-1xjujmc"><p>current section: <strong>${escape(index + 1)}/${escape(count)}</strong></p> <progress${add_attribute("value", count ? (index + 1) / count : 0, 0)}></progress> <p>offset in current section: <strong>${escape(parseFloat(offset).toFixed(2))}/1</strong></p> <progress${add_attribute("value", offset || 0, 0)}></progress></div> <section style="height: 400px; background-color: #d9d9d9;" class="svelte-1xjujmc" data-svelte-h="svelte-e7qcid"><div class="header svelte-1xjujmc" background-color="#d9d9d9"><div class="header-content svelte-1xjujmc"><div class="section-text svelte-1xjujmc"><h1 class="svelte-1xjujmc">A Deep Dive into MTA Data</h1> <h2 class="svelte-1xjujmc">An interactive tool for New York City&#39;s subway system navigation</h2></div> <div class="header-image"> <span class="mdi mdi-train"></span></div></div></div></section> <section style="height: 3200px;" class="svelte-1xjujmc"><div class="fixed-graph svelte-1xjujmc"><h2 class="svelte-1xjujmc" data-svelte-h="svelte-18g723m">New York City</h2> ${validate_component(Graph, "Graph").$$render($$result, { index, offset }, {}, {})}</div></section> <section class="svelte-1xjujmc" data-svelte-h="svelte-xowihu">index</section> <section class="svelte-1xjujmc" data-svelte-h="svelte-xzfoxw">section 3.</section> <section class="svelte-1xjujmc">section 4
+          return `<div class="foreground svelte-1xjujmc" slot="foreground"><div class="progress-bars svelte-1xjujmc"><p>current section: <strong>${escape(index + 1)}/${escape(count)}</strong></p> <progress${add_attribute("value", count ? (index + 1) / count : 0, 0)}></progress> <p>offset in current section: <strong>${escape(parseFloat(offset).toFixed(2))}/1</strong></p> <progress${add_attribute("value", offset || 0, 0)}></progress></div> <section style="height: 400px; background-color: #d9d9d9;" class="svelte-1xjujmc" data-svelte-h="svelte-1nnkr4a"><div class="header svelte-1xjujmc" background-color="#d9d9d9"><div class="header-content svelte-1xjujmc"><div class="section-text svelte-1xjujmc"><h1 class="svelte-1xjujmc">A Deep Dive into MTA Data</h1> <h2 class="svelte-1xjujmc">An interactive tool for New York City&#39;s subway system navigation</h2></div></div></div></section> <section style="height: 3200px;" class="svelte-1xjujmc"><div class="fixed-graph svelte-1xjujmc"><h2 class="svelte-1xjujmc" data-svelte-h="svelte-73zzey">The Issue</h2> ${validate_component(Graph, "Graph").$$render($$result, { index, offset }, {}, {})}</div></section> <section class="svelte-1xjujmc" data-svelte-h="svelte-xowihu">index</section> <section class="svelte-1xjujmc" data-svelte-h="svelte-xzfoxw">section 3.</section> <section class="svelte-1xjujmc">section 4
         ${validate_component(Map$1, "Map").$$render(
             $$result,
             { index, geoJsonToFit },

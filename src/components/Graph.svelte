@@ -257,7 +257,7 @@
         .attr('y', 460) // Move down 20 units for the third line
         .text('and challenging.');
       text.selectAll('tspan')
-        .filter((_, i) => i >= 16)
+        .filter((_, i) => i >= 15)
         .style('opacity', 0) // Set initial opacity to 0 for fading in effect
         .transition() // Apply transition for fading in effect
         .duration(1000) // Duration of the transition

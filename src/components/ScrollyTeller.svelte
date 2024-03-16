@@ -78,17 +78,12 @@
               <h1>A Deep Dive into MTA Data</h1>
               <h2>An interactive tool for New York City's subway system navigation</h2>
             </div>
-            <div class="header-image">
-              <!-- <img src="https://raw.githubusercontent.com/SeanIsayama/nysubways_test/main/src/data/img/statue_of_liberty.png" alt="Image description"> -->
-              <span class="mdi mdi-train"></span>
-
-            </div>
           </div>
         </div>
       </section>
       <section style="height: 3200px;">
         <div class="fixed-graph">
-      <h2>New York City</h2>
+      <h2>The Issue</h2>
       
           <Graph {index} {offset}/>
         </div>
